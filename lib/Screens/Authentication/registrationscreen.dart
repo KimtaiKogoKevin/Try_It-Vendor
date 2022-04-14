@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:csc_picker/csc_picker.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -13,47 +14,55 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  String? countryValue ;
+  String? stateValue ;
+  String? cityValue ;
+  String?  address ;
   final ImagePicker _picker = ImagePicker();
   final _formKey = GlobalKey<FormState>();
   final _businessName = TextEditingController();
   final _phoneNumber = TextEditingController();
   final email = TextEditingController();
-  final kra_pin = TextEditingController();
-  final _address = TextEditingController();
-  final _city = TextEditingController();
-  final _country = TextEditingController();
+  final kraPin = TextEditingController();
+  final _landMark = TextEditingController();
   String? _taxStatus;
 
-  String? bname;
+  String? bName;
   XFile? _shopImage;
   XFile? logo;
-  Widget _formField(
-      {TextEditingController? controller,
-      String? label,
-      TextInputType? type,
-      String? Function(String?)? validator}) {
+
+  Widget _formField({TextEditingController? controller,
+    String? label,
+    TextInputType? type,
+    String? Function(String?)? validator}) {
     return TextFormField(
       controller: controller,
       keyboardType: type,
       decoration: InputDecoration(
         labelText: label,
         prefixText: controller == _phoneNumber ? '+254' : null,
-        hintText: controller == _address
-            ? 'Enter street / road where business is located'
-            : null,
-        prefixIcon: controller == _country
-            ? IconButton(icon: Icon(Icons.flag), onPressed: () {})
-            : null,
+
+
       ),
       validator: validator,
       onChanged: (value) {
         if (controller == _businessName) {
           setState(() {
-            bname = value;
+            bName = value;
           });
         }
       },
     );
+  }
+
+  _scaffold(message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message),
+    action: SnackBarAction(
+      label:'OK',
+      onPressed: (){
+        ScaffoldMessenger.of(context).clearSnackBars();
+      },
+    ),));
   }
 
   Future<XFile?> pickImage() async {
@@ -76,54 +85,54 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     children: [
                       _shopImage == null
                           ? Container(
-                              color: Colors.blue,
-                              height: 250,
-                              child: TextButton(
-                                onPressed: () {
-                                  pickImage().then((value) {
-                                    setState(() {
-                                      _shopImage = value;
-                                    });
-                                  });
-                                },
-                                child: const Center(
-                                  child: Text('Upload Shop Image',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          fontSize: 20)),
-                                ),
-                              ),
-                            )
+                        color: Colors.blue,
+                        height: 250,
+                        child: TextButton(
+                          onPressed: () {
+                            pickImage().then((value) {
+                              setState(() {
+                                _shopImage = value;
+                              });
+                            });
+                          },
+                          child: const Center(
+                            child: Text('Upload Shop Image',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 20)),
+                          ),
+                        ),
+                      )
                           : InkWell(
-                              onTap: () {
-                                pickImage().then((value) {
-                                  setState(() {
-                                    _shopImage = value;
-                                  });
-                                });
-                              },
-                              child: InkWell(
-                                onTap: () {
-                                  pickImage().then((value) {
-                                    setState(() {
-                                      _shopImage = value;
-                                    });
-                                  });
-                                },
-                                child: Container(
-                                  height: 250,
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      image: DecorationImage(
-                                        opacity: 100,
-                                          image: FileImage(
-                                            File(_shopImage!.path),
-                                          ),
-                                          fit: BoxFit.cover)),
-                                ),
-                              ),
-                            ),
+                        onTap: () {
+                          pickImage().then((value) {
+                            setState(() {
+                              _shopImage = value;
+                            });
+                          });
+                        },
+                        child: InkWell(
+                          onTap: () {
+                            pickImage().then((value) {
+                              setState(() {
+                                _shopImage = value;
+                              });
+                            });
+                          },
+                          child: Container(
+                            height: 250,
+                            decoration: BoxDecoration(
+                                color: Colors.blue,
+                                image: DecorationImage(
+                                    opacity: 100,
+                                    image: FileImage(
+                                      File(_shopImage!.path),
+                                    ),
+                                    fit: BoxFit.cover)),
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: 80,
                         child: AppBar(
@@ -144,46 +153,46 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             padding: const EdgeInsets.all(20.0),
                             child: Row(children: [
                               InkWell(
-                                onTap: (){
-                                  pickImage().then((value){
+                                onTap: () {
+                                  pickImage().then((value) {
                                     setState(() {
                                       logo = value;
                                     });
                                   });
                                 },
                                 child: Card(
-                                  elevation: 10,
-                                  child:  logo == null ? const SizedBox(
-                                    height: 50,
-                                    width: 50,
-                                    child: Center(
-                                        child: Text('+')),
-                                  ) : ClipRRect(
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: Container(
-                                      height: 50 ,
+                                    elevation: 10,
+                                    child: logo == null ? const SizedBox(
+                                      height: 50,
+                                      width: 50,
+                                      child: Center(
+                                          child: Text('+')),
+                                    ) : ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: Container(
+                                        height: 50,
                                         width: 50,
-                                      decoration: BoxDecoration(
-                                          color: Colors.blue,
-                                          image: DecorationImage(
-                                              image: FileImage(
-                                                File(logo!.path),
-                                              ),
-                                              fit: BoxFit.cover)),
+                                        decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            image: DecorationImage(
+                                                image: FileImage(
+                                                  File(logo!.path),
+                                                ),
+                                                fit: BoxFit.cover)),
 
 
-                                    ),
-                                  )
+                                      ),
+                                    )
                                 ),
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text(bname == null ? ' Brand Name ' : bname!,
+                              Text(bName == null ? ' Brand Name ' : bName!,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white ,
-                                  fontSize: 20))
+                                      color: Colors.white,
+                                      fontSize: 20))
                             ]),
                           ))
                     ],
@@ -224,6 +233,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             if (_isValid == false) {
                               return 'Invalid Email';
                             }
+                            return null;
                           },
                           type: TextInputType.emailAddress),
                     ],
@@ -245,6 +255,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               if (_taxStatus == null) {
                                 return 'No value selected';
                               }
+                              return null;
                             },
                             hint: const Text('Select'),
                             items: <String>['Yes', 'No']
@@ -267,54 +278,125 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(30, 8, 30, 8),
                     child: _formField(
-                        controller: kra_pin,
+                        controller: kraPin,
                         label: 'Enter KRA Pin',
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Enter KRA PIN';
                           }
+                          return null;
                         },
                         type: TextInputType.number),
                   ),
+
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 8, 30, 8),
+                  padding: const EdgeInsets.fromLTRB(30, 8, 30, 0),
                   child: _formField(
-                      controller: _address,
-                      label: 'Address',
+                      controller: _landMark,
+                      label: 'Enter a landmark near your business',
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return ' Enter Your Address';
+                          return 'Value cannot be null';
                         }
                         return null;
                       },
                       type: TextInputType.text),
                 ),
+
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 8, 30, 8),
-                  child: _formField(
-                      controller: _city,
-                      label: 'City',
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return ' Enter City Name';
-                        }
-                        return null;
-                      },
-                      type: TextInputType.text),
+                  padding: const EdgeInsets.all(16.0),
+                  child: CSCPicker(
+                    ///Enable disable state dropdown [OPTIONAL PARAMETER]
+                    showStates: true,
+
+                    /// Enable disable city drop down [OPTIONAL PARAMETER]
+                     showCities: true,
+
+                    ///Enable (get flag with country name) / Disable (Disable flag) / ShowInDropdownOnly (display flag in dropdown only) [OPTIONAL PARAMETER]
+                    flagState: CountryFlag.ENABLE,
+
+                    ///Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER] (USE with disabledDropdownDecoration)
+                    dropdownDecoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        color: Colors.white,
+                        border:
+                        Border.all(color: Colors.grey.shade300, width: 1)),
+
+                    ///Disabled Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER]  (USE with disabled dropdownDecoration)
+                    disabledDropdownDecoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        color: Colors.white,
+                        border:
+                        Border.all(color: Colors.grey.shade300, width: 1)),
+
+                    ///placeholders for dropdown search field
+                    countrySearchPlaceholder: "Country",
+                    stateSearchPlaceholder: "State",
+                    citySearchPlaceholder: "City",
+
+                    ///labels for dropdown
+                    countryDropdownLabel: "Country",
+                    stateDropdownLabel: "State",
+                    cityDropdownLabel: "City",
+
+                    ///Default Country
+                    defaultCountry: DefaultCountry.Kenya,
+
+                    ///Disable country dropdown (Note: use it with default country)
+                    //disableCountry: true,
+
+                    ///selected item style [OPTIONAL PARAMETER]
+                    selectedItemStyle: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                    ),
+
+                    ///DropdownDialog Heading style [OPTIONAL PARAMETER]
+                    dropdownHeadingStyle: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold),
+
+                    ///DropdownDialog Item style [OPTIONAL PARAMETER]
+                    dropdownItemStyle: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                    ),
+
+                    ///Dialog box radius [OPTIONAL PARAMETER]
+                    dropdownDialogRadius: 10.0,
+
+                    ///Search bar radius [OPTIONAL PARAMETER]
+                    searchBarRadius: 10.0,
+
+                    ///triggers once country selected in dropdown
+                    onCountryChanged: (value) {
+                      setState(() {
+                        ///store value in country variable
+                        countryValue = value;
+                      });
+                    },
+
+                    ///triggers once state selected in dropdown
+                    onStateChanged: (value) {
+                      setState(() {
+                        ///store value in state variable
+                        stateValue = value;
+                      });
+                    },
+
+                    ///triggers once city selected in dropdown
+                    onCityChanged: (value) {
+                      setState(() {
+                        ///store value in city variable
+                        cityValue = value;
+
+                      });
+                    },
+
+                  ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 8, 30, 8),
-                  child: _formField(
-                      controller: _country,
-                      label: 'Country Name',
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return ' Enter Country Name';
-                        }
-                        return null;
-                      },
-                      type: TextInputType.text),
-                ),
+
               ],
             ),
           ),
@@ -323,14 +405,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               children: [
                 Expanded(
                     child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                        } else {}
-                      },
-                      child: const Text('Register')),
-                ))
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            if(_shopImage==null){
+                              _scaffold('Shop Image Required');
+                              return;
+                            }
+                            if( logo==null){
+                              _scaffold('Logo Required');
+                              return;
+                            }
+
+                            if (_formKey.currentState!.validate()) {
+                              if( stateValue==null || countryValue==null){
+                                _scaffold('Address fields cannot be null');
+                                return;
+                              }
+                            }
+                          },
+                          child: const Text('Register')),
+                    ))
               ],
             ),
           ]),
