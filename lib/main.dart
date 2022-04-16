@@ -6,6 +6,7 @@ import 'package:tryit_vendor_app/Screens/Authentication/loginscreen.dart';
 import 'package:tryit_vendor_app/Screens/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,8 +28,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
 
         primarySwatch: Colors.blue,
+
       ),
-      home: const SplashScreen()
+      home: const SplashScreen() ,
+      builder:EasyLoading.init()
     );
   }
 }

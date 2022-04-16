@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:csc_picker/csc_picker.dart';
+
+import '../../firebase_services.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -14,6 +17,7 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final FirebaseServices _services = FirebaseServices();
   String? countryValue ;
   String? stateValue ;
   String? cityValue ;
@@ -30,6 +34,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String? bName;
   XFile? _shopImage;
   XFile? logo;
+  String? shopImageUrl;
+  String? logoImageUrl;
 
   Widget _formField({TextEditingController? controller,
     String? label,
@@ -420,8 +426,43 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             if (_formKey.currentState!.validate()) {
                               if( stateValue==null || countryValue==null){
                                 _scaffold('Address fields cannot be null');
+                                
                                 return;
                               }
+                              EasyLoading.show(status: "Please Wait...");
+                              _services.uploadImage(_shopImage, 'vendors').then((url){
+                                   setState(() {
+                                     shopImageUrl = url;
+                                   });
+                              }).then((value) {
+                                _services.uploadImage(logo, 'vendors').then((url) {
+                                  setState(() {
+                                    logoImageUrl=url;
+                                  });
+                                }).then((value){
+                                  _services.addVendor(
+                                      data: {
+                                  'shopImage':shopImageUrl,
+                                  'logoImage' : logoImageUrl,
+                                  'businessName' : _businessName.text,
+                                  'phoneNo' : '+254${_phoneNumber.text}',
+                                  'email' : email.text,
+                                  'taxRegistered' : _taxStatus,
+                                  'kraPin' : kraPin.text.isEmpty ? null : kraPin.text ,
+                                  'landMark' : _landMark.text,
+                                  'country': countryValue,
+                                  'state' : stateValue,
+                                  'city' : cityValue,
+                                  'uid' : _services.user!.uid,
+                                  'time':DateTime.now()
+                                  })
+
+                                      .then((value) {
+                                        EasyLoading.dismiss();
+
+                                  });
+                                });
+                              });
                             }
                           },
                           child: const Text('Register')),

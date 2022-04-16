@@ -25,7 +25,8 @@ dependencies:
   csc_picker: ^0.2.6
   cloud_firestore: ^3.1.12
   firebase_storage: ^10.2.12
-
+  path_provider: ^2.0.9
+  flutter_easyloading: ^3.0.3
 
 dev_dependencies:
   flutter_test:
