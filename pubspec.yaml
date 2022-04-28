@@ -27,6 +27,7 @@ dependencies:
   firebase_storage: ^10.2.12
   path_provider: ^2.0.9
   flutter_easyloading: ^3.0.3
+  cached_network_image: ^3.2.0
 
 dev_dependencies:
   flutter_test:

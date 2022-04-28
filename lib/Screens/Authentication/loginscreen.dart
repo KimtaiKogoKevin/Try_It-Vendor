@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:tryit_vendor_app/Screens/Authentication/registrationscreen.dart';
+import 'package:tryit_vendor_app/Screens/landingscreen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class LoginScreen extends StatelessWidget {
       }
 
       // Render your application if authenticated
-      return RegistrationScreen();
+      return const LandingScreen();
     },
   );
   }

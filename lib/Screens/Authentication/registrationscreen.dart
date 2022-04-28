@@ -6,6 +6,8 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:tryit_vendor_app/Screens/home.dart';
+import 'package:tryit_vendor_app/Screens/landingscreen.dart';
 
 import '../../firebase_services.dart';
 
@@ -69,6 +71,63 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ScaffoldMessenger.of(context).clearSnackBars();
       },
     ),));
+  }
+
+  saveToDB(){
+    if(_shopImage==null){
+      _scaffold('Shop Image Required');
+      return;
+    }
+    if( logo==null){
+      _scaffold('Logo Required');
+      return;
+    }
+
+    if (_formKey.currentState!.validate()) {
+      if( stateValue==null || countryValue==null){
+        _scaffold('Address fields cannot be null');
+
+        return;
+      }
+      EasyLoading.show(status: "Please Wait...");
+      _services.uploadImage(_shopImage, 'vendors/${_services.user!.uid}/shopImage.jpg').then((url){
+        setState(() {
+          shopImageUrl = url;
+        });
+      }).then((value) {
+        _services.uploadImage(logo, 'vendors/${_services.user!.uid}/logo.jpg').then((url) {
+          setState(() {
+            logoImageUrl=url;
+          });
+        }).then((value){
+          _services.addVendor(
+              data: {
+                'shopImage':shopImageUrl,
+                'logoImage' : logoImageUrl,
+                'businessName' : _businessName.text,
+                'phoneNo' : '+254${_phoneNumber.text}',
+                'email' : email.text,
+                'taxRegistered' : _taxStatus,
+                'kraPin' : kraPin.text.isEmpty ? 'no value' : kraPin.text ,
+                'landMark' : _landMark.text,
+                'country': countryValue,
+                'state' : stateValue,
+                'city' : cityValue,
+                'approved' : false,
+                'uid' : _services.user?.uid,
+                'time':DateTime.now()
+              })
+
+              .then((value) {
+            EasyLoading.dismiss();
+            return  Navigator.of(context).pushReplacement( MaterialPageRoute (
+              builder: (BuildContext context) => const LandingScreen(),
+            ),);
+
+          });
+        });
+      });
+    }
   }
 
   Future<XFile?> pickImage() async {
@@ -413,58 +472,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                          onPressed: () {
-                            if(_shopImage==null){
-                              _scaffold('Shop Image Required');
-                              return;
-                            }
-                            if( logo==null){
-                              _scaffold('Logo Required');
-                              return;
-                            }
+                          onPressed: saveToDB,
 
-                            if (_formKey.currentState!.validate()) {
-                              if( stateValue==null || countryValue==null){
-                                _scaffold('Address fields cannot be null');
-                                
-                                return;
-                              }
-                              EasyLoading.show(status: "Please Wait...");
-                              _services.uploadImage(_shopImage, 'vendors').then((url){
-                                   setState(() {
-                                     shopImageUrl = url;
-                                   });
-                              }).then((value) {
-                                _services.uploadImage(logo, 'vendors').then((url) {
-                                  setState(() {
-                                    logoImageUrl=url;
-                                  });
-                                }).then((value){
-                                  _services.addVendor(
-                                      data: {
-                                  'shopImage':shopImageUrl,
-                                  'logoImage' : logoImageUrl,
-                                  'businessName' : _businessName.text,
-                                  'phoneNo' : '+254${_phoneNumber.text}',
-                                  'email' : email.text,
-                                  'taxRegistered' : _taxStatus,
-                                  'kraPin' : kraPin.text.isEmpty ? null : kraPin.text ,
-                                  'landMark' : _landMark.text,
-                                  'country': countryValue,
-                                  'state' : stateValue,
-                                  'city' : cityValue,
-                                  'uid' : _services.user!.uid,
-                                  'time':DateTime.now()
-                                  })
-
-                                      .then((value) {
-                                        EasyLoading.dismiss();
-
-                                  });
-                                });
-                              });
-                            }
-                          },
                           child: const Text('Register')),
                     ))
               ],

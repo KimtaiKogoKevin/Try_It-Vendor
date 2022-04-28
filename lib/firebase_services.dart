@@ -9,21 +9,21 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 
 class FirebaseServices {
   User? user = FirebaseAuth.instance.currentUser;
-  final CollectionReference _vendor =
-      FirebaseFirestore.instance.collection('Vendor');
+  final CollectionReference vendor = FirebaseFirestore.instance.collection('Vendor');
 
   final FirebaseStorage storage = FirebaseStorage.instance;
 
   Future<String> uploadImage(XFile? file, String? reference) async {
     File _file = File(file!.path);
-    Reference ref = FirebaseStorage.instance.ref('$reference/${user?.uid}');
+    Reference ref = FirebaseStorage.instance.ref(reference);
     await ref.putFile(_file);
     String downloadUrl = await ref.getDownloadURL();
     return downloadUrl;
   }
   Future <void> addVendor({Map<String,dynamic>?data}) {
     // Call the user's CollectionReference to add a new user
-    return _vendor.doc(user!.uid)
+
+    return vendor.doc(user!.uid)
         .set(data)
         .then((value) => print("Vendor Added"))
         .catchError((error) => print("Failed to add Vendor: $error"));
