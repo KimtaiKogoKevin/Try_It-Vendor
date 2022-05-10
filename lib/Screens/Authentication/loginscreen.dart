@@ -5,6 +5,7 @@ import 'package:tryit_vendor_app/Screens/Authentication/registrationscreen.dart'
 import 'package:tryit_vendor_app/Screens/landingscreen.dart';
 
 class LoginScreen extends StatelessWidget {
+  static const String id = "Login-screen";
   const LoginScreen({Key? key}) : super(key: key);
 
   @override

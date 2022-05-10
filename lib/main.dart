@@ -4,8 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tryit_vendor_app/Screens/Authentication/loginscreen.dart';
 import 'package:tryit_vendor_app/Screens/home.dart';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tryit_vendor_app/provider/vendor_provider.dart';
+import 'Screens/Authentication/Add_product_screen.dart';
+import 'Screens/ProductScreen.dart';
 import 'firebase_options.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main() async {
@@ -13,7 +18,15 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  Provider.debugCheckInvalidValueType = null;
+  runApp(
+      MultiProvider(
+        providers: [
+          Provider<VendorProvider>(create: (_) => VendorProvider()),
+
+        ],
+        child: MyApp(),
+      ),);
 }
 
 class MyApp extends StatelessWidget {
@@ -27,11 +40,21 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
 
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
 
       ),
       home: const SplashScreen() ,
-      builder:EasyLoading.init()
+      builder:EasyLoading.init(),
+      routes:{
+    HomePage.id:(context) => const HomePage(),
+        ProductScreen.id:(context) => const ProductScreen(),
+        AddProductScreen.id:(context) => const AddProductScreen(),
+        LoginScreen.id:(context) => const LoginScreen(),
+
+
+
+
+      },
     );
   }
 }
