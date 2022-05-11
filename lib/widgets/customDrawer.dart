@@ -6,7 +6,7 @@ import 'package:tryit_vendor_app/Screens/ProductScreen.dart';
 import 'package:tryit_vendor_app/provider/vendor_provider.dart';
 
 
-import '../Screens/Authentication/Add_product_screen.dart';
+import '../Screens/Add_product_screen.dart';
 import '../Screens/Authentication/loginscreen.dart';
 import '../Screens/home.dart';
 

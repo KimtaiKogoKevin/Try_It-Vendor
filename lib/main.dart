@@ -6,8 +6,9 @@ import 'package:tryit_vendor_app/Screens/Authentication/loginscreen.dart';
 import 'package:tryit_vendor_app/Screens/home.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tryit_vendor_app/provider/product_provider.dart';
 import 'package:tryit_vendor_app/provider/vendor_provider.dart';
-import 'Screens/Authentication/Add_product_screen.dart';
+import 'Screens/Add_product_screen.dart';
 import 'Screens/ProductScreen.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,8 @@ void main() async {
       MultiProvider(
         providers: [
           Provider<VendorProvider>(create: (_) => VendorProvider()),
+          Provider<ProductProvider>(create: (_) => ProductProvider()),
+
 
         ],
         child: MyApp(),
