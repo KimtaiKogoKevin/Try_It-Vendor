@@ -10,6 +10,11 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 class FirebaseServices {
   User? user = FirebaseAuth.instance.currentUser;
   final CollectionReference vendor = FirebaseFirestore.instance.collection('Vendor');
+  final CollectionReference categories = FirebaseFirestore.instance.collection('categories');
+  final CollectionReference mainCategories = FirebaseFirestore.instance.collection('mainCategories');
+
+  final CollectionReference subCategories = FirebaseFirestore.instance.collection('subCategories');
+
 
   final FirebaseStorage storage = FirebaseStorage.instance;
 
