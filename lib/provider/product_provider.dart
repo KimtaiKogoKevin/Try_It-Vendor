@@ -14,7 +14,22 @@ class ProductProvider with ChangeNotifier {
     int? discountPrice,
      String? category,
      String? mainCategory,
-    String? subCategory
+    String? subCategory,
+    String? taxStatus ,
+    DateTime? discountDateSchedule,
+    int? skuNumber,
+    bool? manageInventory,
+    bool? chargeShipping,
+    int? shippingCharge,
+    String? brandName,
+    int? stockOnHand,
+    int? reorderLevel,
+    List? sizeList,
+    String? otherDetails,
+
+
+
+
 
 
   }) {
@@ -38,6 +53,47 @@ class ProductProvider with ChangeNotifier {
     }
     if (subCategory != null) {
       productData!['subCategory'] = subCategory;
+    }
+    if (taxStatus != null) {
+    productData!['taxStatus'] = taxStatus;
+    }
+    if(discountDateSchedule!= null){
+      productData!['discountDateSchedule']= discountDateSchedule;
+
+    }
+    if(skuNumber!= null){
+      productData!['skuNumber']= skuNumber;
+
+    }
+
+    if(stockOnHand!= null){
+      productData!['stockOnHand']= stockOnHand;
+
+    }
+
+    if(reorderLevel!= null){
+      productData!['reorderLevel']= reorderLevel;
+
+    }
+    if(shippingCharge!= null){
+      productData!['shippingCharge']= shippingCharge;
+
+    }
+    if(chargeShipping!= null){
+      productData!['chargeShipping']= chargeShipping;
+
+    }
+    if(brandName!= null){
+      productData!['brandName']= brandName;
+
+    }
+    if(sizeList!= null){
+      productData!['size']= sizeList;
+
+    }
+    if(otherDetails!= null){
+      productData!['otherDetails']= otherDetails;
+
     }
     notifyListeners();
   }

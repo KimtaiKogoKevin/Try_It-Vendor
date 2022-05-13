@@ -18,25 +18,12 @@ class _CreateProductState extends State<CreateProduct>
   final FirebaseServices _services = FirebaseServices();
   final List<String> _categories = [];
   String? selectedCategory;
+  int? taxAmount;
+String? taxStatus;
+  bool? discountPrice = false;
 
-  Widget _formField({
-    String? label,
-    TextInputType? inputType,
-    void Function(String)? onChanged,
-  }) {
-    return TextFormField(
-      keyboardType: inputType,
-      decoration: InputDecoration(
-        label: Text(label!),
-      ),
-      validator: (value) {
-        if (value!.isEmpty) {
-          return label;
-        }
-      },
-      onChanged: onChanged,
-    );
-  }
+
+
 
   Widget _categoryDropDown(ProductProvider provider) {
     return DropdownButtonFormField<String>(
@@ -47,7 +34,7 @@ class _CreateProductState extends State<CreateProduct>
       ),
       icon: const Icon(Icons.arrow_drop_down),
       elevation: 16,
-      style: const TextStyle(color: Colors.deepPurple),
+      style: const TextStyle(color: Colors.grey),
       onChanged: (String? newValue) {
         setState(() {
           selectedCategory = newValue!;
@@ -65,6 +52,10 @@ class _CreateProductState extends State<CreateProduct>
       },
     );
   }
+  //commission dropdown
+
+  //commission percentage
+
 
   @override
   void initState() {
@@ -85,28 +76,76 @@ class _CreateProductState extends State<CreateProduct>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<ProductProvider>(builder: (context, provider, child) {
       return Padding(
         padding: const EdgeInsets.all(20.0),
         child: ListView(children: [
-          _formField(
+          _services.formField(
               label: 'Enter Product Name',
               inputType: TextInputType.name,
               onChanged: (value) {
                 //save in provider
                 provider.getFormData(productName: value);
               }),
-          SizedBox(height:30),
+          const SizedBox(height:30),
 
-          _formField(
-              label: 'Price: KSH:',
+          _services.formField(
+              label: 'Enter Product Description',
+              minLines: 2,
+              maxLines: 10,
+              inputType: TextInputType.multiline,
+              onChanged: (value) {
+                //save in provider
+                provider.getFormData(productDescription: value);
+              }),
+          const SizedBox(height:30),
+
+          _services.formField(
+              label: 'Selling Price ' ,
+              hint: 'This is the amount the customer will pay ',
+
               inputType: TextInputType.number,
               onChanged: (value) {
                 //save in provider
                 provider.getFormData(regularPrice: int.parse(value));
               }),
 
-          SizedBox(height:30),
+          const SizedBox(height:30),
+          _services.formField(
+              label: 'Discount Price',
+
+              inputType: TextInputType.number,
+              onChanged: (value) {
+                //save in provider
+                setState(() {
+                  provider.getFormData(regularPrice: int.parse(value));
+                  discountPrice  = true;
+
+
+                });
+              }),
+          if(discountPrice!)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: (){
+                  showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime(4000) , ).then((value){
+                    provider.getFormData(
+                        discountDateSchedule: value
+                    );
+                  });
+                },
+                  child: const Padding(
+                    padding:  EdgeInsets.all(8.0),
+                    child: Text('Discount Duration',style:TextStyle(color: Colors.blue),),
+                  )),
+              if(provider.productData!['discountDateSchedule']!=null)
+              Text(_services.formattedDate(provider.productData!['discountDateSchedule']))
+            ],
+          ),
+          const SizedBox(height:50),
 
           _categoryDropDown(provider),
           Padding(
@@ -166,7 +205,7 @@ class _CreateProductState extends State<CreateProduct>
                         child: const Icon(Icons.arrow_drop_down)),
                 ]),
           ),
-         SizedBox(height:30),
+         const SizedBox(height:30),
 
         ]),
       );
@@ -194,7 +233,7 @@ class MainCategoryList extends StatelessWidget {
             }
 
             if (snapshot.data!.size == 0) {
-              return Center(child: const Text('No Main Categories'));
+              return const Center(child: Text('No Main Categories'));
             }
 
             return ListView.builder(
