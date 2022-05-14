@@ -2,56 +2,95 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
+import 'package:tryit_vendor_app/provider/product_provider.dart';
 
 class FirebaseServices {
   User? user = FirebaseAuth.instance.currentUser;
-  final CollectionReference vendor = FirebaseFirestore.instance.collection('Vendor');
-  final CollectionReference categories = FirebaseFirestore.instance.collection('categories');
-  final CollectionReference mainCategories = FirebaseFirestore.instance.collection('mainCategories');
+  final CollectionReference vendor =
+      FirebaseFirestore.instance.collection('Vendor');
+  final CollectionReference categories =
+      FirebaseFirestore.instance.collection('categories');
+  final CollectionReference mainCategories =
+      FirebaseFirestore.instance.collection('mainCategories');
+  final CollectionReference products =
+      FirebaseFirestore.instance.collection('Products');
 
-  final CollectionReference subCategories = FirebaseFirestore.instance.collection('subCategories');
+  final CollectionReference subCategories =
+      FirebaseFirestore.instance.collection('subCategories');
 
-
-  final FirebaseStorage storage = FirebaseStorage.instance;
+  final firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
 
   Future<String> uploadImage(XFile? file, String? reference) async {
     File _file = File(file!.path);
-    Reference ref = FirebaseStorage.instance.ref(reference);
+    firebase_storage.Reference ref =
+        firebase_storage.FirebaseStorage.instance.ref(reference);
     await ref.putFile(_file);
     String downloadUrl = await ref.getDownloadURL();
     return downloadUrl;
   }
-  Future <void> addVendor({Map<String,dynamic>?data}) {
+
+  Future<List> uploadFiles(
+      {List<XFile>? images, String? ref, ProductProvider? provider}) async {
+    var imageUrls = await Future.wait(
+      images!.map(
+        (_image) => uploadFile(image: File(_image.path), reference: ref),
+      ),
+    );
+    provider!.getFormData(imageUrls: imageUrls);
+
+    return imageUrls;
+  }
+
+  Future uploadFile({File? image, String? reference}) async {
+    firebase_storage.Reference storageReference = storage
+        .ref()
+        .child('$reference!/${DateTime.now().microsecondsSinceEpoch}');
+    firebase_storage.UploadTask uploadTask = storageReference.putFile(image!);
+    await uploadTask;
+    return storageReference.getDownloadURL();
+  }
+
+  Future<void> addVendor({Map<String, dynamic>? data, BuildContext? context}) {
     // Call the user's CollectionReference to add a new user
 
-    return vendor.doc(user!.uid)
+    return vendor
+        .doc(user!.uid)
         .set(data)
-        .then((value) => print("Vendor Added"))
-        .catchError((error) => print("Failed to add Vendor: $error"));
+        .then((value) => scaffold(context, "Add Vendor Success"));
+    //.catchError((error) => print("Failed to add Vendor: $error"));
   }
-  String formattedDate(date){
 
+  Future<void> addProducts(
+      {Map<String, dynamic>? data, BuildContext? context}) {
+    // Call the user's CollectionReference to add a new user
+
+    return products
+        .add(data)
+        .then((value) => scaffold(context, "Add Product Success"));
+    //.catchError((error) => print("Failed to add Vendor: $error"));
+  }
+
+  String formattedDate(date) {
     var outputFormatDate = DateFormat.yMd().add_jm();
     var outputDate = outputFormatDate.format(date);
     return outputDate;
   }
-
 
   //formfield
   Widget formField({
     String? label,
     TextInputType? inputType,
     void Function(String)? onChanged,
-    int?  maxLines,
+    int? maxLines,
     int? minLines,
     String? hint,
-
   }) {
     return TextFormField(
       keyboardType: inputType,
@@ -68,8 +107,7 @@ class FirebaseServices {
         ),
         label: Text(label!),
         hintText: hint,
-        hintStyle: const TextStyle(fontSize: 8 , color: Colors.grey),
-
+        hintStyle: const TextStyle(fontSize: 8, color: Colors.grey),
       ),
       validator: (value) {
         if (value!.isEmpty) {
@@ -81,5 +119,16 @@ class FirebaseServices {
     );
   }
 
+  //scaffold message
+  scaffold(context, message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {
+          ScaffoldMessenger.of(context).clearSnackBars();
+        },
+      ),
+    ));
+  }
 }
-

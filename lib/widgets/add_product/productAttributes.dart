@@ -14,7 +14,11 @@ class _ProdAttributesState extends State<ProdAttributes>
   @override
   bool get wantKeepAlive => true;
   String? brandName;
+  String? selectedUnit;
+
   final List<String> _sizeList = [];
+   final List<String> _unit = ["Kg" ,"gram", "ml" , "litre" , "metres" ,"cm"];
+
   final _sizeText = TextEditingController();
   bool? savedSize = false;
   bool? _entered = false;
@@ -54,6 +58,39 @@ class _ProdAttributesState extends State<ProdAttributes>
     );
   }
 
+  Widget _unitDropDown(ProductProvider provider) {
+    return DropdownButtonFormField<String>(
+      value: selectedUnit,
+
+      hint: const Text(
+        'Size / quantity of the Product',
+        style: TextStyle(fontSize: 18),
+      ),
+      icon: const Icon(Icons.arrow_drop_down),
+      elevation: 16,
+      style: const TextStyle(color: Colors.grey),
+      onChanged: (String? newValue) {
+        setState(() {
+          selectedUnit = newValue!;
+          provider.getFormData(selectedUnit: newValue);
+        });
+      },
+      items: _unit.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value, style: const TextStyle(color: Colors.black),),
+        );
+      }).toList(),
+      validator: (value) {
+        if(value!.isEmpty){
+          return 'Select Unit';
+
+        }
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -71,6 +108,8 @@ class _ProdAttributesState extends State<ProdAttributes>
             const SizedBox(
               height: 20,
             ),
+         _unitDropDown(provider) ,
+
             Row(children: [
               Expanded(
                 child: TextFormField(
@@ -143,25 +182,31 @@ class _ProdAttributesState extends State<ProdAttributes>
             if (_sizeList.isNotEmpty)
               Column(
                 children: [
-                  const Text(
-                    'Long Press To delete',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                    ),
-                  ),
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Long Press To delete',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      )),
                   if (savedSize == false)
-                    ElevatedButton(
-                      child: Text(savedSize == true && _sizeList.isNotEmpty
-                          ? 'Saved'
-                          : 'Click to Save'),
-                      onPressed: () {
-                        setState(() {
-                          savedSize = true;
-                          provider.getFormData(sizeList: _sizeList);
-                        });
-                      },
-                    ),
+                    Row(children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          child: Text(savedSize == true && _sizeList.isNotEmpty
+                              ? 'Saved'
+                              : 'Click to Save'),
+                          onPressed: () {
+                            setState(() {
+                              savedSize = true;
+                              provider.getFormData(sizeList: _sizeList);
+                            });
+                          },
+                        ),
+                      ),
+                    ]),
                 ],
               ),
             const SizedBox(
