@@ -63,7 +63,7 @@ class CustomDrawer extends StatelessWidget {
                   title: const Text('Products'),
                   leading: const Icon(Icons.weekend_outlined),
                   children: [
-                    _menu(menuTitle: 'All Products', route: ProductScreen.id),
+                    _menu(menuTitle: 'All Products', route: ProductScreen.id, icon: Icons.all_inclusive_rounded),
                     _menu(
                         menuTitle: 'Add Products', route: AddProductScreen.id ,icon: Icons.add),
                   ])

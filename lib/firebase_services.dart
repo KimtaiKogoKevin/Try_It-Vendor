@@ -78,9 +78,14 @@ class FirebaseServices {
   }
 
   String formattedDate(date) {
-    var outputFormatDate = DateFormat.yMd().add_jm();
+    var outputFormatDate = DateFormat.yMd();
     var outputDate = outputFormatDate.format(date);
     return outputDate;
+  }
+    formattedCurrency(number) {
+    var f =  NumberFormat("#,##,###");
+    String formattedNumber = f.format(number);
+    return formattedNumber;
   }
 
   //formfield
