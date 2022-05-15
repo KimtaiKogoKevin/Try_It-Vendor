@@ -48,8 +48,8 @@ class PublishedProducts extends StatelessWidget {
                         child: Row(
                           children: [
                             SizedBox(
-                                height: 160,
-                                width: 160,
+                                height: 100,
+                                width: 100,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: CachedNetworkImage(
@@ -62,12 +62,16 @@ class PublishedProducts extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    Text(
-                                      'Name: \t \t \t' + product.productName!,
-                                      style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue),
+                                    FittedBox(
+                                      fit: BoxFit.contain,
+
+                                      child: Text(
+                                        'Name: \t \t \t' + product.productName!,
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue),
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 5,

@@ -80,6 +80,9 @@ class ProductProvider with ChangeNotifier {
     if (chargeShipping != null) {
       productData!['chargeShipping'] = chargeShipping;
     }
+    if (manageInventory != null) {
+      productData!['manageInventory'] = manageInventory;
+    }
     if (brandName != null) {
       productData!['brandName'] = brandName;
     }

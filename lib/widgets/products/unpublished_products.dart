@@ -61,12 +61,15 @@ class UnpublishedProducts extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
-                                  Text(
-                                    'Name: \t \t \t' + product.productName!,
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue),
+                                  FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Text(
+                                      'Name: \t \t \t' + product.productName!,
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue),
+                                    ),
                                   ),
                                   const SizedBox(
                                     height: 5,
