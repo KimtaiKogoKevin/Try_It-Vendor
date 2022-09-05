@@ -20,6 +20,8 @@ class _GeneralState extends State<General> with AutomaticKeepAliveClientMixin {
   int? taxAmount;
   String? taxStatus;
   bool? discountPrice = false;
+  bool? isRecommended = false;
+  bool? isPopular = false;
 
   Widget _categoryDropDown(ProductProvider provider) {
     return DropdownButtonFormField<String>(
@@ -109,6 +111,10 @@ class _GeneralState extends State<General> with AutomaticKeepAliveClientMixin {
                 //save in provider
                 provider.getFormData(regularPrice: int.parse(value));
               }),
+
+
+
+
           const SizedBox(height: 30),
           _services.formField(
               label: 'Discount Price',
@@ -156,6 +162,8 @@ class _GeneralState extends State<General> with AutomaticKeepAliveClientMixin {
               ],
             ),
           const SizedBox(height: 50),
+
+
           _categoryDropDown(provider),
           Padding(
             padding: const EdgeInsets.only(top: 20, bottom: 10),

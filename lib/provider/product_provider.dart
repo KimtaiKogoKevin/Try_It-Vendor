@@ -6,7 +6,10 @@ import '../firebase_services.dart';
 
 class ProductProvider with ChangeNotifier {
   Map<String, dynamic>? productData = {
-    'approved':false
+    'approved':false,
+    'isRecommended':true,
+    'isPopular':true
+
   };
   final List<XFile>? imageFiles = [];
 
@@ -26,6 +29,7 @@ class ProductProvider with ChangeNotifier {
     int? shippingCharge,
     String? brandName,
     int? stockOnHand,
+
     int? reorderLevel,
     List? sizeList,
     String? otherDetails,
@@ -57,6 +61,7 @@ class ProductProvider with ChangeNotifier {
     if (subCategory != null) {
       productData!['subCategory'] = subCategory;
     }
+
     if (taxStatus != null) {
       productData!['taxStatus'] = taxStatus;
     }

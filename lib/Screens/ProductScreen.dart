@@ -31,7 +31,7 @@ class ProductScreen extends StatelessWidget {
                 ]),
           ),
           drawer: const CustomDrawer(),
-          body: const TabBarView(
+          body:  const TabBarView(
             children: [
               UnpublishedProducts(),
               PublishedProducts(),

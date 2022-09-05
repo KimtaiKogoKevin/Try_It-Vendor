@@ -31,6 +31,7 @@ dependencies:
   provider: ^6.0.2
   intl: ^0.17.0
   flutter_slidable: ^1.2.0
+  search_page: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:
